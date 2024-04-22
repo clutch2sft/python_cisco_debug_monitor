@@ -1,4 +1,4 @@
-# python_term_mon
+# python_degug_mon
 
 to use:
 
