@@ -1,4 +1,4 @@
-# python_degug_mon
+# python_debug_mon
 
 to use:
 
