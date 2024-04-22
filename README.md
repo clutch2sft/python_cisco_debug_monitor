@@ -14,13 +14,21 @@ This is a re-write of my other repository python_term_mon
 main.py is somewhat tested and adds a few things functionally:
 
 -moves class DeviceMonitor out of the main file into a class file
+
 -moves deduplication of messages based on regex into RegexMessageTracker class file
+
 -creates a thread safe singleton like based logger with only 1 instanace for each ip address
+
 -creates a singleton config loader class with only on instance for the entire running processes
+
 -moves devices and configurable items into config.json
+
 -sets output directory for log files and is configurable in config.json
+
 -adds date/timestamp to debug log filenames
+
 -info logs to file and warning logs to console and file
+
 -handles case where user leaves __commments__ from config.json.sample in config.json
 
 monitor python sessions 
