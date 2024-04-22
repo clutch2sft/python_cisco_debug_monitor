@@ -12,6 +12,7 @@ cd src
 This is a re-write of my other repository python_term_mon
 
 main.py is somewhat tested and adds a few things functionally:
+
 -moves class DeviceMonitor out of the main file into a class file
 -moves deduplication of messages based on regex into RegexMessageTracker class file
 -creates a thread safe singleton like based logger with only 1 instanace for each ip address
