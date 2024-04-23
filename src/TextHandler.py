@@ -6,6 +6,18 @@ class TextHandler(logging.Handler):
         super().__init__()
         self.text_widget = text_widget
         self.max_lines = max_lines  # Maximum lines to keep in the text widget
+        self.setup_tags()
+
+    def setup_tags(self):
+        # Setting up tags for different log levels and specific messages
+        self.text_widget.tag_config('DEBUG', foreground='gray')
+        self.text_widget.tag_config('INFO', foreground='black')
+        self.text_widget.tag_config('WARNING', foreground='orange')
+        self.text_widget.tag_config('ERROR', foreground='red')
+        self.text_widget.tag_config('CRITICAL', foreground='red', underline=1)
+        # Specific message tags
+        self.text_widget.tag_config('ROAM_SWITCH', foreground='red')
+        self.text_widget.tag_config('ASSOCIATED_AP', foreground='green')
 
     def emit(self, record):
         # Safely update the widget with the new log record
@@ -14,7 +26,17 @@ class TextHandler(logging.Handler):
     def do_emit(self, record):
         msg = self.format(record)
         if self.text_widget:
-            self.text_widget.insert(tk.END, msg + '\n')
+            # Select tag based on specific phrases or log level
+            if "Aux roam switch radio role" in msg:
+                tag = 'ROAM_SWITCH'
+            elif "Associated To AP" in msg:
+                tag = 'ASSOCIATED_AP'
+            else:
+                # Default to log level tag
+                log_level = record.levelname
+                tag = log_level if hasattr(self, log_level) else 'INFO'
+
+            self.text_widget.insert(tk.END, msg + '\n', tag)
             self.text_widget.see(tk.END)  # Auto-scroll to the end
             self.trim_buffer()
 
