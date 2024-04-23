@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import scrolledtext, messagebox, simpledialog
+from tkinter import scrolledtext, messagebox, simpledialog, font
 import threading
 import sys
 from pathlib import Path
@@ -47,8 +47,11 @@ class AppGUI:
         self.root.grid_rowconfigure(1, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
 
+        # Create a font object
+        text_font = font.Font(family="Arial", size=16, weight="bold")
+
         # Text widget for output
-        self.output = scrolledtext.ScrolledText(root, height=10, width=100)
+        self.output = scrolledtext.ScrolledText(root, height=10, width=100, font=text_font)
         self.output.grid(row=1, column=0, sticky='nsew', padx=10, pady=10)
 
         # Frame for buttons
@@ -56,14 +59,14 @@ class AppGUI:
         button_frame.grid(row=2, column=0, sticky='ew')
 
         # Start and Stop buttons centered in the frame
-        self.start_button = tk.Button(button_frame, text="Start", command=self.start_process)
+        self.start_button = tk.Button(button_frame, text="Start", command=self.start_process, font=text_font)
         self.start_button.pack(side='left', padx=5, pady=5)
 
-        self.stop_button = tk.Button(button_frame, text="Stop", command=self.stop_process)
+        self.stop_button = tk.Button(button_frame, text="Stop", command=self.stop_process, font=text_font)
         self.stop_button.pack(side='left', padx=5, pady=5)
 
         # Quit button in the main window, under the frame
-        self.quit_button = tk.Button(root, text="Quit", command=self.quit_application)
+        self.quit_button = tk.Button(root, text="Quit", command=self.quit_application, font=text_font)
         self.quit_button.grid(row=3, column=0, pady=10)
         # Handling close button safely
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)

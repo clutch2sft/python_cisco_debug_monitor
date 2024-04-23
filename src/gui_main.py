@@ -26,6 +26,7 @@ def start_monitoring(text_handler=None):
     config = config_loader.get_configuration()
     # Pass the text_handler to get_logger
     wkst_logger = DeviceLogger.get_logger("workstation", config['output_dir'], None, config['log_format'], external_handler=text_handler)
+    shutdown_event.clear()
     main_loop(devices, wkst_logger, text_handler)
 
 

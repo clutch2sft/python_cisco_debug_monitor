@@ -5,6 +5,7 @@ from datetime import datetime
 from RegexMessageTracker import RegexMessageTracker  # Assume the tracker class is imported
 from DeviceLogger import DeviceLogger
 from ConfigurationLoader import ConfigLoader
+from CustomCiscoIosSSH import CustomCiscoIosSSH
 class DeviceMonitor:
     def __init__(self, device, shutdown_event, external_handler=None):
         self.device = device
@@ -32,13 +33,12 @@ class DeviceMonitor:
         else:
             self.device_logger = None
 
-
     def setup_device_connection(self):
         if self.log_netmiko:
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             session_log_file = f"{self.output_dir}/netmiko_session_{self.ip}_{timestamp}.log"
-            return ConnectHandler(**self.device, session_log=session_log_file)
-        return ConnectHandler(**self.device)
+            return CustomCiscoIosSSH(**self.device, session_log=session_log_file)
+        return CustomCiscoIosSSH(**self.device)
 
     def setup_netmiko_debug_logging(self):
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')

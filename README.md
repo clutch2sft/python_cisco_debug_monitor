@@ -1,5 +1,15 @@
 # python_cisco_debug_mon
 
+NEW GUI! - you must install screeninfo and netmiko
+
+pip install screeninfo
+pip install netmiko
+
+then run {python gui.py}
+
+
+
+
 to use:
 
 cd src
