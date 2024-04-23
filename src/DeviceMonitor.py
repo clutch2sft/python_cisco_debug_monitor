@@ -6,8 +6,7 @@ from RegexMessageTracker import RegexMessageTracker  # Assume the tracker class 
 from DeviceLogger import DeviceLogger
 from ConfigurationLoader import ConfigLoader
 class DeviceMonitor:
-
-    def __init__(self, device, shutdown_event):
+    def __init__(self, device, shutdown_event, external_handler=None):
         self.device = device
         self.ip = device['ip']
         self.shutdown_event = shutdown_event
@@ -17,19 +16,22 @@ class DeviceMonitor:
         self.output_dir = config['output_dir']
         self.log_netmiko = config['log_netmiko']
         self.debug_netmiko = config['debug_netmiko']
-        self.console_level = config.get('console_level', None)
+        self.console_level = None if external_handler else config.get('console_level', None)
         self.log_format = config['log_format']
-        # Convert console_level string to actual logging level
+
+        # Convert console_level string to actual logging level if needed
         console_level = getattr(logging, self.console_level) if self.console_level else None
+
         # Initialize RegexMessageTracker only if logging via Netmiko is not set
         if not self.log_netmiko and not self.debug_netmiko:
-            self.device_logger = DeviceLogger.get_logger(self.ip, self.output_dir, console_level=self.console_level, format = self.log_format)
+            self.device_logger = DeviceLogger.get_logger(self.ip, self.output_dir, console_level=console_level, format=self.log_format, external_handler=external_handler)
             self.tracker = RegexMessageTracker(self.ip, self.output_dir)
         elif self.debug_netmiko:
             self.setup_netmiko_debug_logging()
             self.device_logger = None
         else:
             self.device_logger = None
+
 
     def setup_device_connection(self):
         if self.log_netmiko:
@@ -90,6 +92,7 @@ class DeviceMonitor:
                 # Send 'undebug all' command if the shutdown event is set
                 if self.shutdown_event.is_set():
                     try:
+                        self.device_logger.warning(f"Shutdown Requested")
                         self.log_netmiko = False
                         with self.setup_device_connection() as net_connect2:
                             net_connect2.send_command('u all')

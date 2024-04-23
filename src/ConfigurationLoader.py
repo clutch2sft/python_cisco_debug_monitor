@@ -1,4 +1,4 @@
-import json
+import json, sys, shutil
 from pathlib import Path
 
 class ConfigLoader:
@@ -10,14 +10,30 @@ class ConfigLoader:
             cls._instance = super(ConfigLoader, cls).__new__(cls)
             # Set default path if none provided
             if filepath is None:
-                # Get the absolute path to the directory where the current script resides
-                base_path = Path(__file__).resolve().parent.parent
+                if getattr(sys, 'frozen', False):
+                    # If the application is frozen using PyInstaller
+                    base_path = Path(sys.executable).resolve().parent
+                else:
+                    # Normal execution path
+                    base_path = Path(__file__).resolve().parent.parent
                 filepath = base_path / 'config' / 'config.json'
             cls._instance.config = cls._instance.load_config(filepath)
         return cls._instance
 
     def load_config(self, filepath):
         """ Load the JSON config file and clean it. """
+        if not filepath.exists():
+            print(f"Configuration file not found at {filepath}.")
+            try:
+                sample_path = filepath.parent / 'config.json.sample'
+                if sample_path.exists():
+                    shutil.copy(sample_path, filepath)
+                    print(f"Sample configuration file copied to {filepath}. Please edit this file and restart the application.")
+                else:
+                    print("No sample configuration file found. Please ensure a config.json file exists.")
+            except Exception as e:
+                print(f"Failed to copy sample configuration file: {str(e)}")
+            sys.exit(1)
         try:
             with open(filepath, 'r') as file:
                 config = json.load(file)
